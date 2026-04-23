@@ -54,6 +54,8 @@
     startTime: 0,
     startX: 0,
     startY: 0,
+    usingTouch: false,
+    touchHDir: 0,
     flyAnchorX: 0,
     flyAnchorY: 0,
     flySynced: false,
@@ -465,6 +467,8 @@
     input.startTime = performance.now();
     input.startX = e.clientX;
     input.startY = e.clientY;
+    input.usingTouch = e.pointerType === "touch";
+    input.touchHDir = 0;
     if (state.mode === "play") {
       if (isFlying()) {
         const pl = state.player;
@@ -509,6 +513,15 @@
     }
     const dx = e.clientX - input.startX;
     const dy = e.clientY - input.startY;
+    if (input.usingTouch) {
+      if (Math.abs(dx) > 8) {
+        input.dragging = true;
+        input.touchHDir = dx > 0 ? 1 : -1;
+      } else {
+        input.touchHDir = 0;
+      }
+      return;
+    }
     if (Math.abs(dx) > 8) {
       input.dragging = true;
     }
@@ -534,6 +547,8 @@
     input.activeId = null;
     input.downInFrame = false;
     input.dragging = false;
+    input.usingTouch = false;
+    input.touchHDir = 0;
     if (wasDrag) return;
     const inMenu = state.mode === "title" || state.mode === "over";
     if (inMenu) {
@@ -641,6 +656,9 @@
       let hdir = 0;
       if (keys.left) hdir -= 1;
       if (keys.right) hdir += 1;
+      if (input.activeId !== null && input.usingTouch) {
+        if (input.touchHDir !== 0) hdir = input.touchHDir;
+      }
       p.x += hdir * HORIZ_SPEED * dt;
       clampPlayerX(p);
     }

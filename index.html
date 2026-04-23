@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <meta name="theme-color" content="#05050f" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>Neon Run — 점프 게임</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="glow-rings" aria-hidden="true"></div>
+      <header
+        class="pc-game-header"
+        aria-label="PC 게임 모드"
+      >
+        <h2 class="pc-game-header__title">
+          NEON <span class="pc-game-header__run">RUN</span> — <span class="pc-game-header__sub">PC</span>
+        </h2>
+        <p class="pc-game-header__cheer">장애물을 부수고, 기록을 뛰어넘는 그 순간을 응원해요! 화이팅!</p>
+      </header>
+      <div class="frame">
+        <canvas id="game" width="900" height="400"></canvas>
+        <div class="hud" id="hud">
+          <div class="hud__score">
+            <span class="hud__label">SCORE</span>
+            <span class="hud__value" id="score">0</span>
+          </div>
+          <div class="hud__best">
+            <span class="hud__label">BEST</span>
+            <span class="hud__value" id="best">0</span>
+          </div>
+        </div>
+        <div class="overlay overlay--start" id="screen-start">
+          <h1 class="title">NEON <span>RUN</span></h1>
+          <p class="subtitle">땅만 아니에요 — 잠시 후엔 점프 중에도 푸른빛 하늘 장애물이 나옵니다.</p>
+          <p class="hint">탭 = 점프 · 아이템(무적·점프·비행·총) · 휴대: 좌우/비행때 2D 드래그</p>
+        </div>
+        <div class="overlay overlay--over hidden" id="screen-over">
+          <h2 class="over-title">CRASH</h2>
+          <p class="over-score">점수 <strong id="final">0</strong></p>
+          <p class="over-hint">탭하면 다시 · 드래그 = 이동 (PC: 스페이스)</p>
+        </div>
+      </div>
+      <p class="footer">아이템: 공중·지면 · 무적 7s / 점프 10s / 비행 10s / 총 8s(자동 사격) · 휴대: 탭/드래그</p>
+    </div>
+    <script src="game.js" defer></script>
+  </body>
+</html>

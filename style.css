@@ -1,0 +1,327 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+  overflow: hidden;
+  overscroll-behavior: none;
+  color-scheme: dark;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+}
+
+body {
+  min-height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Orbitron", system-ui, sans-serif;
+  color: #e8f4ff;
+  background: #05050f;
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% 0%, #1a0a2e 0%, transparent 55%),
+    radial-gradient(ellipse 80% 50% at 80% 100%, #0a1628 0%, transparent 50%),
+    linear-gradient(180deg, #06060f 0%, #0a0a12 100%);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+.app {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 100vw;
+  min-height: 0;
+  padding: max(0.5rem, env(safe-area-inset-top))
+    max(0.5rem, env(safe-area-inset-right)) max(0.35rem, env(safe-area-inset-bottom))
+    max(0.5rem, env(safe-area-inset-left));
+}
+
+/* PC(마우스·가로 900px 이상): 게임 화면 위 타이틀 & 응원 */
+.pc-game-header {
+  display: none;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: min(96vw, 920px);
+  text-align: center;
+  padding: 0 0.75rem 0.2rem;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+@media (min-width: 900px) and (pointer: fine) {
+  .pc-game-header {
+    display: block;
+  }
+}
+
+.pc-game-header__title {
+  margin: 0 0 0.2rem;
+  font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  background: linear-gradient(100deg, #7dffb0, #00c8ff, #c9a0ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 12px rgba(0, 200, 255, 0.32));
+}
+
+.pc-game-header__run {
+  font-weight: 400;
+  opacity: 0.95;
+}
+
+.pc-game-header__sub {
+  font-size: 0.75em;
+  letter-spacing: 0.18em;
+  opacity: 0.88;
+}
+
+.pc-game-header__cheer {
+  margin: 0;
+  font-size: clamp(0.68rem, 1.05vw, 0.8rem);
+  line-height: 1.5;
+  color: #90b0d0;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  text-shadow: 0 0 10px rgba(0, 200, 255, 0.12);
+}
+
+.glow-rings {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 255, 200, 0.06) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(180, 0, 255, 0.08) 0%,
+      transparent 35%
+    );
+  animation: ringPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes ringPulse {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+.frame {
+  position: relative;
+  z-index: 1;
+  border-radius: 1rem;
+  box-shadow:
+    0 0 0 1px rgba(0, 255, 200, 0.2),
+    0 0 40px rgba(0, 200, 255, 0.15),
+    0 20px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  max-width: min(100% - 0.5rem, 920px);
+  width: 100%;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+#game {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+  image-rendering: auto;
+  background: #0a0a14;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: auto;
+}
+
+.hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  padding-top: max(0.6rem, env(safe-area-inset-top, 0));
+  padding-left: max(1rem, env(safe-area-inset-left, 0));
+  padding-right: max(1rem, env(safe-area-inset-right, 0));
+  pointer-events: none;
+  text-shadow: 0 0 12px rgba(0, 255, 200, 0.4);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+}
+
+@media (min-width: 600px) {
+  .hud {
+    font-size: 0.85rem;
+    padding: 0.75rem 1.25rem;
+  }
+}
+
+.hud__label {
+  display: block;
+  opacity: 0.6;
+  font-size: 0.65em;
+  margin-bottom: 0.15rem;
+}
+
+.hud__value {
+  font-weight: 900;
+  color: #7dffb0;
+  font-size: 1.35em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud__best .hud__value {
+  color: #c9a0ff;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem;
+  padding-top: max(1.5rem, env(safe-area-inset-top, 0));
+  padding-left: max(1rem, env(safe-area-inset-left, 0));
+  padding-right: max(1rem, env(safe-area-inset-right, 0));
+  background: linear-gradient(
+    160deg,
+    rgba(6, 8, 20, 0.78) 0%,
+    rgba(10, 4, 22, 0.88) 100%
+  );
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  z-index: 2;
+  touch-action: manipulation;
+  transition: opacity 0.35s ease, visibility 0.35s;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  background: linear-gradient(100deg, #7dffb0, #00c8ff, #c9a0ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.4));
+}
+
+.title span {
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.subtitle {
+  margin: 0 0 0.5rem;
+  color: #a0b4cc;
+  font-size: 0.8rem;
+  max-width: 22em;
+  line-height: 1.5;
+}
+
+.hint,
+.over-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.7rem;
+  color: #4dd4ff;
+  letter-spacing: 0.1em;
+  animation: hintBlink 1.5s ease-in-out infinite;
+}
+
+@keyframes hintBlink {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.over-title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  font-weight: 900;
+  letter-spacing: 0.35em;
+  color: #ff6b8a;
+  text-shadow: 0 0 30px rgba(255, 80, 120, 0.7);
+}
+
+.over-score {
+  margin: 0;
+  font-size: 1rem;
+  color: #a0b4cc;
+}
+
+.over-score strong {
+  color: #7dffb0;
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.footer {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  max-width: min(96vw, 32rem);
+  padding: 0 0.5rem;
+  text-align: center;
+  font-size: clamp(0.55rem, 2.8vw, 0.65rem);
+  letter-spacing: 0.12em;
+  opacity: 0.4;
+  color: #6a7a8c;
+}
+
+@media (max-width: 480px) {
+  .frame {
+    border-radius: 0.5rem;
+  }
+}

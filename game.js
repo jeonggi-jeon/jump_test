@@ -54,6 +54,9 @@
     startTime: 0,
     startX: 0,
     startY: 0,
+    flyAnchorX: 0,
+    flyAnchorY: 0,
+    flySynced: false,
   };
 
   function toGameX(clientX) {
@@ -462,6 +465,16 @@
     input.startTime = performance.now();
     input.startX = e.clientX;
     input.startY = e.clientY;
+    if (state.mode === "play") {
+      if (isFlying()) {
+        const pl = state.player;
+        input.flyAnchorX = pl.x;
+        input.flyAnchorY = pl.y;
+        input.flySynced = true;
+      } else {
+        input.flySynced = false;
+      }
+    }
     try {
       frameEl.setPointerCapture(e.pointerId);
     } catch (err) {
@@ -471,28 +484,37 @@
   function onPointerMove(e) {
     if (e.pointerId !== input.activeId) return;
     if (state.mode !== "play") return;
+    const p = state.player;
+    if (isFlying()) {
+      if (!input.flySynced) {
+        input.flyAnchorX = p.x;
+        input.flyAnchorY = p.y;
+        input.startX = e.clientX;
+        input.startY = e.clientY;
+        input.flySynced = true;
+      }
+      const ddx = e.clientX - input.startX;
+      const ddy = e.clientY - input.startY;
+      const r = canvas.getBoundingClientRect();
+      const scX = BASE_W / Math.max(0.5, r.width);
+      const scY = BASE_H / Math.max(0.5, r.height);
+      p.x = input.flyAnchorX + ddx * scX;
+      p.y = input.flyAnchorY + ddy * scY;
+      clampPlayerX(p);
+      clampPlayerYFly(p);
+      if (Math.abs(ddx) > 8 || Math.abs(ddy) > 8) {
+        input.dragging = true;
+      }
+      return;
+    }
     const dx = e.clientX - input.startX;
     const dy = e.clientY - input.startY;
-    if (isFlying()) {
-      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-        input.dragging = true;
-      }
-    } else {
-      if (Math.abs(dx) > 8) {
-        input.dragging = true;
-      }
+    if (Math.abs(dx) > 8) {
+      input.dragging = true;
     }
     if (input.dragging) {
-      const p = state.player;
-      if (isFlying()) {
-        const gx = toGameX(e.clientX);
-        const gy = toGameY(e.clientY);
-        p.x = Math.max(EDGE_PAD, Math.min(BASE_W - p.w - EDGE_PAD, gx - p.w * 0.5));
-        p.y = Math.max(MIN_P_Y, Math.min(groundY() - p.h, gy - p.h * 0.5));
-      } else {
-        const gx = toGameX(e.clientX);
-        p.x = Math.max(EDGE_PAD, Math.min(BASE_W - p.w - EDGE_PAD, gx - p.w * 0.5));
-      }
+      const gx = toGameX(e.clientX);
+      p.x = Math.max(EDGE_PAD, Math.min(BASE_W - p.w - EDGE_PAD, gx - p.w * 0.5));
     }
   }
   function onPointerUp(e) {
@@ -582,16 +604,21 @@
     p.pulse = Math.max(0, p.pulse - dt * 3.5);
     if (isFlying()) {
       p.onGround = false;
-      let vh = 0;
-      if (keys.left) vh -= 1;
-      if (keys.right) vh += 1;
-      p.x += vh * HORIZ_SPEED * dt;
-      let vv = 0;
-      if (keys.up) vv -= 1;
-      if (keys.down) vv += 1;
-      p.y += vv * FLY_VERT_SPEED * dt;
-      clampPlayerX(p);
-      clampPlayerYFly(p);
+      if (input.activeId === null) {
+        let vh = 0;
+        if (keys.left) vh -= 1;
+        if (keys.right) vh += 1;
+        p.x += vh * HORIZ_SPEED * dt;
+        let vv = 0;
+        if (keys.up) vv -= 1;
+        if (keys.down) vv += 1;
+        p.y += vv * FLY_VERT_SPEED * dt;
+        clampPlayerX(p);
+        clampPlayerYFly(p);
+      } else {
+        clampPlayerX(p);
+        clampPlayerYFly(p);
+      }
     } else {
       p.vy += GRAVITY;
       p.y += p.vy;

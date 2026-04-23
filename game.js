@@ -13,10 +13,82 @@
   const screenStart = document.getElementById("screen-start");
   const screenOver = document.getElementById("screen-over");
   const frameEl = document.querySelector(".frame");
+  const appEl = document.getElementById("app");
 
   const LS_KEY = "neon_run_best";
   let best = Number(localStorage.getItem(LS_KEY)) || 0;
   elBest.textContent = String(Math.floor(best));
+
+  // 모바일: 주소창이 덜 쓸 모이게(스크롤) + 첫 터치에 전체화면 시도 + 가로 잠금
+  (function initMobileImmersive() {
+    const narrow = window.matchMedia("(max-width: 1024px)").matches;
+    const likelyTouch = window.matchMedia(
+      "(hover: none) or (pointer: coarse)"
+    ).matches;
+    const mobileImmersive = narrow && likelyTouch;
+    if (mobileImmersive) {
+      const scrollHideBar = function () {
+        const hh = 1;
+        try {
+          window.scrollTo(0, hh);
+          requestAnimationFrame(function () {
+            window.scrollTo(0, 0);
+          });
+        } catch (e) {
+          /* */
+        }
+      };
+      window.addEventListener("load", scrollHideBar, { passive: true, once: true });
+      window.addEventListener(
+        "orientationchange",
+        function onOrient() {
+          setTimeout(scrollHideBar, 120);
+        },
+        { passive: true }
+      );
+    }
+
+    let triedFs = false;
+    function lockLandscape() {
+      const o = window.screen && window.screen.orientation;
+      if (o && typeof o.lock === "function") {
+        o.lock("landscape").catch(function onLockErr() {
+          /* 일부 iOS/브라우저는 잠금 미지원 */
+        });
+      }
+    }
+    function tryFullscreen() {
+      if (triedFs) return;
+      const el = appEl || document.documentElement;
+      const r =
+        el.requestFullscreen ||
+        el.webkitRequestFullscreen ||
+        el.mozRequestFullScreen ||
+        el.msRequestFullscreen;
+      if (!r) return;
+      triedFs = true;
+      const p = r.call(el);
+      if (p && typeof p.then === "function") {
+        p.then(lockLandscape).catch(function onFsErr() {
+          /* 사용자 거부·미지원(사파리 일부: 동기 성공) */
+        });
+      } else {
+        lockLandscape();
+      }
+    }
+
+    window.addEventListener(
+      "pointerdown",
+      function onFirstTouch() {
+        if (!mobileImmersive) {
+          return;
+        }
+        tryFullscreen();
+        window.removeEventListener("pointerdown", onFirstTouch, { capture: true });
+      },
+      { capture: true, once: true }
+    );
+  })();
 
   const BASE_W = 900;
   const BASE_H = 400;

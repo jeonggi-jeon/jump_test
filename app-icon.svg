@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Neon Run">
+  <rect width="192" height="192" rx="28" fill="#0a0a16"/>
+  <rect x="24" y="52" width="100" height="18" rx="4" fill="#1a1a2e"/>
+  <rect x="32" y="100" width="20" height="64" rx="3" fill="#2a2a40"/>
+  <rect x="56" y="100" width="20" height="64" rx="3" fill="#2a2a40"/>
+  <rect x="80" y="100" width="20" height="64" rx="3" fill="#2a2a40"/>
+  <circle cx="88" cy="100" r="7" fill="#4dd4ff"/>
+  <rect x="104" y="100" width="20" height="64" rx="3" fill="#2a2a40"/>
+  <rect x="128" y="100" width="20" height="64" rx="3" fill="#2a2a40"/>
+  <path d="M124 32 L168 32 L150 100 Z" fill="none" stroke="#7dffb0" stroke-width="6" stroke-linejoin="round"/>
+</svg>

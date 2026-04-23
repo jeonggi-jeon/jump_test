@@ -4,8 +4,10 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content"
     />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="app-icon.svg" />
     <meta name="theme-color" content="#05050f" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -23,7 +25,16 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="app">
+    <div class="app" id="app">
+      <aside
+        class="portrait-rotate"
+        id="portrait-rotate"
+        role="status"
+        aria-label="권장 방향"
+      >
+        <span class="portrait-rotate__icon" aria-hidden="true">↻</span>
+        <p>가로 모드 &amp; 첫 터치로 전체화면에 가깝게 쓸 수 있어요</p>
+      </aside>
       <div class="glow-rings" aria-hidden="true"></div>
       <header
         class="pc-game-header"
